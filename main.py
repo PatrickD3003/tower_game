@@ -23,7 +23,6 @@ pygame.display.flip()
 
 # create tower object
 TOWER_HEALTH = 100
-
 # left side tower
 L_TOWER_WIDTH = 100
 L_TOWER_HEIGHT = 200
@@ -38,6 +37,7 @@ R_TOWER_Y = HEIGHT - R_TOWER_HEIGHT
 
 left_tower = Tower(TOWER_HEALTH, L_TOWER_WIDTH, L_TOWER_HEIGHT, L_TOWER_X, L_TOWER_Y, RED)
 right_tower = Tower(TOWER_HEALTH, R_TOWER_WIDTH, R_TOWER_HEIGHT, R_TOWER_X, R_TOWER_Y, RED)
+
 def draw_window(): 
     left_tower.draw_tower()
     right_tower.draw_tower()
@@ -53,6 +53,13 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_1:  # summon left side soldier
+                    
+                
+                if event.key == pygame.K_LEFT:  # summon right side soldier
+
         draw_window()
 
 
