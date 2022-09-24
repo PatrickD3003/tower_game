@@ -2,8 +2,7 @@ import pygame
 class Tower:
     WIDTH, HEIGHT = 900, 500
     WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-    def __init__(self, health_bar, tower_width, tower_height, tower_location_x, tower_location_y, tower_color):
-        self.health_bar = health_bar
+    def __init__(self, tower_width, tower_height, tower_location_x, tower_location_y, tower_color):
         self.width = tower_width
         self.height = tower_height
         self.x = tower_location_x
