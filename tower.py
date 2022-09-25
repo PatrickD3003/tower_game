@@ -12,7 +12,7 @@ class Tower:
 
     
     def draw_tower(self):
-        return pygame.draw.rect(self.WINDOW, self.color, self.create_tower)
+        pygame.draw.rect(self.WINDOW, self.color, self.create_tower)
 
         
 

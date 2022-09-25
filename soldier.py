@@ -9,9 +9,10 @@ class Soldier:
         self.y = soldier_y
         self.color = soldier_color
         self.create_soldier = pygame.Rect(self.x, self.y, self.width, self.height)
+    
         
     def summon_soldier(self):
-        return pygame.draw.rect(self.WINDOW, self.color, self.create_soldier)
+        pygame.draw.rect(self.WINDOW, self.color, self.create_soldier)
 
     def soldier_move(self, soldier_velocity):
         self.velocity = soldier_velocity

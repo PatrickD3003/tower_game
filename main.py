@@ -17,10 +17,6 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# untuk sementara background warnanya white
-WINDOW.fill(WHITE)
-pygame.display.flip()
-
 # create tower object
 # left side tower
 L_TOWER_WIDTH = 100
@@ -43,6 +39,7 @@ L_SOLDIER_X = 20 + L_TOWER_WIDTH
 L_SOLDIER_Y = HEIGHT - L_SOLDIER_HEIGHT
 L_SOLDIER_COLOR = GREEN
 L_SOLDIER_VELOCITY = 5
+
 # right side soldier
 R_SOLDIER_WIDTH = 10
 R_SOLDIER_HEIGHT = 20
@@ -50,6 +47,7 @@ R_SOLDIER_X = WIDTH - 20 - R_TOWER_WIDTH - R_SOLDIER_WIDTH
 R_SOLDIER_Y = HEIGHT - R_SOLDIER_HEIGHT
 R_SOLDIER_COLOR = BLUE
 R_SOLDIER_VELOCITY = -5
+
 
 
 
@@ -64,13 +62,13 @@ def draw_window(left_soldiers_barrack, right_soldiers_barrack):
         right_soldier.summon_soldier()
     pygame.display.update()
 
+
 def handle_movement(left_soldiers_barrack, right_soldiers_barrack):
         for left_soldier in left_soldiers_barrack:
-            left_soldier.x += L_SOLDIER_VELOCITY
-        
-        for right_soldier in right_soldiers_barrack:
-            right_soldier.x += R_SOLDIER_VELOCITY
+            left_soldier.create_soldier.x += L_SOLDIER_VELOCITY
 
+        for right_soldier in right_soldiers_barrack:
+            right_soldier.create_soldier.x += R_SOLDIER_VELOCITY
 
 def main():
     run = True
@@ -79,6 +77,8 @@ def main():
     right_soldiers_barrack = []
     while run:
         clock.tick(FPS)
+        WINDOW.fill(WHITE)
+        #pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -96,4 +96,7 @@ def main():
         draw_window(left_soldiers_barrack, right_soldiers_barrack)
 
 
-main()
+    main()
+
+if __name__ == "__main__":
+    main()
