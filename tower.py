@@ -1,19 +1,20 @@
 import pygame
+import os
 class Tower:
     WIDTH, HEIGHT = 900, 500
     WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-    def __init__(self, tower_width, tower_height, tower_location_x, tower_location_y, tower_color):
-        self.width = tower_width
-        self.height = tower_height
-        self.x = tower_location_x
-        self.y = tower_location_y
-        self.color = tower_color
-        self.create_tower = pygame.Rect(self.x, self.y, self.width, self.height)
-
+    def __init__(self, tower_rotate):
+        self.width, self.height = 200, 200 
+        self.tower_image_import = pygame.image.load(os.path.join("buildings", "castle.png"))
+        self.tower_image = pygame.transform.scale(self.tower_image_import, (self.width, self.height))
+        self.y_pos = self.HEIGHT - self.tower_image.get_height()
+        if tower_rotate == True:  # if tower di kanan
+            self.x_pos = self.WIDTH - self.tower_image.get_width() - 20
+        else:
+            self.x_pos = 20
     
     def draw_tower(self):
-        pygame.draw.rect(self.WINDOW, self.color, self.create_tower)
-
+        self.WINDOW.blit(self.tower_image, (self.x_pos, self.y_pos))
         
 
 
