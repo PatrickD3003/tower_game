@@ -1,22 +1,38 @@
 import pygame
+import os
+WIDTH, HEIGHT = 1200, 500
+WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+# sementara pake ini dulu
+tower_width = 100
+tower_height = 200
 class Soldier:
-    WIDTH, HEIGHT = 900, 500
-    WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-    def __init__(self, soldier_width, soldier_height, soldier_x, soldier_y, soldier_color):
-        self.width = soldier_width
-        self.height = soldier_height
-        self.x = soldier_x
-        self.y = soldier_y
-        self.color = soldier_color
-        self.create_soldier = pygame.Rect(self.x, self.y, self.width, self.height)
-    
-        
-    def summon_soldier(self):
-        pygame.draw.rect(self.WINDOW, self.color, self.create_soldier)
+    width, height = 40, 40
+    def __init__(self, soldier_x, soldier_y, soldier_width, soldier_height, soldier_rotate):
+        self.width, self.height = soldier_width, soldier_height
+        self.x, self.y = soldier_x, soldier_y 
+        self.rotate = soldier_rotate
+        self.image_soldier_import = pygame.image.load(os.path.join("characters", "ogre_sprite.png"))
+        self.image_soldier = pygame.transform.scale(self.image_soldier_import, (self.width, self.height))
 
-    def soldier_move(self, soldier_velocity):
-        self.velocity = soldier_velocity
-        self.create_soldier.x += self.velocity
+        if self.rotate == True:  # kalo misalkan kubu sebelah kanan
+            self.image_soldier = pygame.transform.flip(self.image_soldier, True, False)
+
+            
+    def summon_soldier(self):
+        WINDOW.blit(self.image_soldier, (self.x, self.y))
+
+    def soldier_move(self):
+        self.velocity = 2
+        if self.rotate == True:
+            self.velocity *= -1
+        else:
+            self.velocity *= 1
+        self.hitbox.x += self.velocity
+
+    def create_hitbox(self):
+        pygame.Rect(self.x, self.y, self.width, self.height)
+
+
 
         
 
