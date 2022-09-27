@@ -1,48 +1,86 @@
 import pygame
-import os
-WIDTH, HEIGHT = 1200, 500
-WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-# sementara pake ini dulu
-tower_width = 100
-tower_height = 200
-class Soldier:
-    width, height = 40, 40
-    def __init__(self, soldier_rotate):
-        self.width, self.height = 40, 40
-        self.rotate = soldier_rotate
-        self.image_soldier_import = pygame.image.load(os.path.join("characters", "ogre_sprite.png"))
-        self.image_soldier = pygame.transform.scale(self.image_soldier_import, (self.width, self.height))
-        self.y_pos = HEIGHT - self.image_soldier.get_height()
-        self.rect = self.image_soldier.get_rect()
-        self.rect.y = self.y_pos  # samain y sama soldier object
-        
-        if self.rotate == True:  # kalo misalkan kubu sebelah kanan
-            self.x_pos = WIDTH - 20 - tower_width - self.width
-            self.rect.x = self.x_pos  # object rectangle samain x sama soldier
-            self.image_soldier = pygame.transform.flip(self.image_soldier, True, False)
+
+pygame.init()
+
+class Soldier(pygame.sprite.Sprite):
+
+    def __init__(self, team, name):
+        super(Soldier, self).__init__()
+        w, h = pygame.display.get_surface().get_size()
+        self.team = team
+        self.name = name
+        self.attack_timer_sum = 0
+        self.animation_timer_sum = 0
+        self.attacking = False
+
+        if self.name == "ogre":
+            self.width = w / 16
+            self.height = h / 8
+            self.img_default = pygame.transform.scale(pygame.image.load("textures/d1.png"), (self.width, self.height))
+            self.img_attacks = [pygame.transform.scale(pygame.image.load("textures/a1.png"), (self.width, self.height)),
+                                pygame.transform.scale(pygame.image.load("textures/a2.png"), (self.width, self.height)),
+                                pygame.transform.scale(pygame.image.load("textures/a3.png"), (self.width, self.height)),]
+            self.img = self.img_default
+            self.attack_speed = 120
+            self.hp = 100
+            self.dmg = 25
+
+        self.rect = self.img.get_rect()
+
+        self.rect.y = h - (self.img.get_height() + 80)
+        if team == "1":
+            self.rect.x = 100 - (self.img.get_width() / 2)
+        elif team == "2":
+            self.img = pygame.transform.flip(self.img, True, False)
+            self.rect.x = w - 100 - (self.img.get_width() / 2)
+
+    def move(self, go):
+        if go:
+            if self.team == "1":
+                pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
+                self.rect.move_ip(4, 0)
+            elif self.team == "2":
+                pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
+                self.rect.move_ip(-4, 0)
         else:
-            self.x_pos = 20 + tower_width  # kalo misalkan kubu sebelah kiri
-            self.rect.x = self.x_pos
-
-    def summon_soldier(self):
-        pygame.draw.rect(WINDOW, (0,0,0), self.rect)
-        WINDOW.blit(self.image_soldier, (self.rect.x, self.rect.y))
-
-    def soldier_move(self):
-        self.velocity = 2
-        if self.rotate == True:
-            self.velocity *= -1
-        else:
-            self.velocity *= 1
-
-        self.x_pos += self.velocity
-        self.rect.x = self.x_pos
+            if self.team == "1":
+                pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
+            elif self.team == "2":
+                pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
 
 
 
-        
+    def attack(self):
 
-    
-    
+        self.attack_timer = pygame.time.Clock()
+        self.attack_timer_sum += 1
+        print(self.attack_timer_sum)
+
+        if self.attack_timer_sum == self.attack_speed:
+            self.pattern = 0
+            self.attack_timer_sum = 0
+            self.attacking = True
+
+        if self.attacking:
+            self.img = self.img_attacks[self.pattern]
+            if self.attack_timer_sum == round(self.attack_speed * 0.1):
+                self.pattern += 1
+            if self.attack_timer_sum == round(self.attack_speed * 0.2):
+                self.pattern += 1
+            if self.team == "1":
+                pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
+            elif self.team == "2":
+                self.img = pygame.transform.flip(self.img, True, False)
+                pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
+            if self.attack_timer_sum == self.attack_speed * 0.3:
+                self.pattern = 0
+                self.attacking = False
+                self.img = self.img_default
+                if self.team == "1":
+                    pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
+                elif self.team == "2":
+                    self.img = pygame.transform.flip(self.img, True, False)
+                    pygame.display.get_surface().blit(self.img, (self.rect.x, self.rect.y))
+
 
 
