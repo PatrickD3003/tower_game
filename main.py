@@ -13,51 +13,39 @@ WIDTH, HEIGHT = 1200, 500
 FPS = 60
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tower Game")
+
 ROTATE = True  # right team
 NO_ROTATE = False  # left team
+
 # basic colors rgb black white
 WHITE, BLACK, RED, GREEN, BLUE = (255, 255, 255), (0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255)
+
+velocity = 2
 
 left_tower = Tower(NO_ROTATE)
 right_tower = Tower(ROTATE)
 
+left_group = pygame.sprite.Group()
+right_group = pygame.sprite.Group()
 
-def draw_window(left_soldiers_barrack, right_soldiers_barrack): 
+def draw_window(left_group, right_group): 
     left_tower.draw_tower()
     right_tower.draw_tower()
 
-    for left_soldier in left_soldiers_barrack:
-        left_soldier.summon_soldier()
+    for entity in left_group:
+        WINDOW.blit(entity.image_soldier, (entity.rect.x, entity.rect.y))
     
-    for right_soldier in right_soldiers_barrack:
-        right_soldier.summon_soldier()
+    for entity in right_group:
+        WINDOW.blit(entity.image_soldier, (entity.rect.x, entity.rect.y))
     pygame.display.update()
 
 
-def handle_movement(left_soldiers_barrack, right_soldiers_barrack):
-        for left_soldier in left_soldiers_barrack:
-            left_soldier.soldier_move()
-            if right_soldiers_barrack != None:
-                if left_soldier.rect.colliderect(right_soldier.rect):  # kalo collide dua rectangle
-                    print("ian kontol")
-                    pygame.event.post(pygame.event.Event(LEFT_ATTACK))
-                    left_soldiers_barrack.remove(left_soldier)
-                else:
-                    print("ian anjing")
-                    left_soldier.velocity = 2
-                
-
-        for right_soldier in right_soldiers_barrack:
-            right_soldier.soldier_move()
-            if left_soldiers_barrack != None:
-                if right_soldier.rect.colliderect(left_soldier.rect):
-                    print("ian kontol")
-                    pygame.event.post(pygame.event.Event(RIGHT_ATTACK))
-                    left_soldiers_barrack.remove(left_soldier)
-
-                else:
-                    print("ian suka angela")
-                    right_soldier.velocity = 2
+def move(left, right):
+    for entity in left:
+        entity.soldier_move(True)
+    
+    for entity in right:
+        entity.soldier_move(True)
 
 def main():
     run = True
@@ -77,14 +65,19 @@ def main():
                 if event.key == pygame.K_1:  # summon left side soldier
                     left_soldier = Soldier(NO_ROTATE)
                     left_soldiers_barrack.append(left_soldier)
+                    left_group.add(left_soldier)
+
                     
 
                 if event.key == pygame.K_LEFT:  # summon right side soldier
                     right_soldier = Soldier(ROTATE)
                     right_soldiers_barrack.append(right_soldier)
+                    right_group.add(right_soldier)
 
-        handle_movement(left_soldiers_barrack, right_soldiers_barrack)
-        draw_window(left_soldiers_barrack, right_soldiers_barrack)
+        
+
+        move(left_soldiers_barrack, right_soldiers_barrack)
+        draw_window(left_group, right_group)
         
 
 
