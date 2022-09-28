@@ -94,7 +94,13 @@ def main():
 
         move(left_soldiers_barrack, right_soldiers_barrack)
         draw_window(left_group, right_group)
-        collide(left_group, right_group, left_soldiers_barrack, right_soldiers_barrack)
+        
+        if left_soldiers_barrack != []:
+            left_soldier.collide(right_group, right_soldiers_barrack)
+            continue
+        if right_soldiers_barrack != []:
+            right_soldier.collide(left_group, left_soldiers_barrack)
+            continue
 
         
 

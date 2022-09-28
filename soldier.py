@@ -35,15 +35,21 @@ class Soldier(pygame.sprite.Sprite):
                 self.velocity *= -1
             else:
                 self.velocity *= 1
-            self.rect.x += self.velocity
-    
-    
-    def collide(self, spriteGroup):
-        if pygame.sprite.spritecollideany(self, spriteGroup):
-            print("COLLIDE")
         else:
-            print("NOT COLLIDE")
-            pass
+            self.velocity = 0
+        self.rect.x += self.velocity
+    
+    
+    def collide(self, enemy_group, enemy_barrack):
+        self.enemy_group = enemy_group
+        self.enemy_barrack = enemy_barrack
+
+        if self.enemy_barrack != []:
+            if pygame.sprite.spritecollideany(self, enemy_barrack):
+                print("COLLIDED")
+            else:
+                pass
+        
 
 
 
