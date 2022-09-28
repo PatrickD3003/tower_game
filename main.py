@@ -54,16 +54,13 @@ def collide(left_group, right_group, left_barrack, right_barrack):
                 print("COLLIDE")
             else:
                 pass
-    
-    elif right_barrack != []:
+    if right_barrack != []:
         for entity in left_barrack:
             if pygame.sprite.spritecollideany(entity, right_group):
                 print("COLLIDE THIS SIDE ALSO")
             else:
                 pass
-    
-    else:
-        pass
+
 
 
 def main():
