@@ -1,63 +1,121 @@
 import pygame
-import os
-WIDTH, HEIGHT = 1200, 500
-WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-# sementara pake ini dulu
-tower_width = 100
-tower_height = 200
+from level import *
+
+pygame.init()
 
 class Soldier(pygame.sprite.Sprite):
-    width, height = 40, 40
-    def __init__(self, soldier_rotate):
-        super().__init__()
-        self.width, self.height = 40, 40
-        self.rotate = soldier_rotate
 
-        self.image_soldier_import = pygame.image.load(os.path.join("characters", "ogre_sprite.png"))
-        self.image_soldier = pygame.transform.scale(self.image_soldier_import, (self.width, self.height))
-        self.rect = self.image_soldier.get_rect()
-        self.rect.y = HEIGHT - self.height
+    def __init__(self, team, name, hp, dmg, attack_speed):
+        super(Soldier, self).__init__()
+        w, h = pygame.display.get_surface().get_size()
+        self.team = team
+        self.name = name
+        self.hp = hp
+        self.dmg = dmg
+        self.attack_speed = attack_speed
 
-        if self.rotate == True:  # kalo misalkan kubu sebelah kanan
-            self.image_soldier = pygame.transform.flip(self.image_soldier, True, False)
-            self.rect.x = WIDTH - 20 - tower_width - self.width
-        else:
-            self.rect.x = 20 + tower_width
- 
-    def summon_soldier(self):
-        WINDOW.blit(self.image_soldier, (self.rect.x, self.rect.y))
+        self.attack_timer_sum = 20
+        self.pattern = 0
+        self.attacking = False
+        self.attacked_this_turn = True
 
-    def soldier_move(self, flag):
-        self.flag = flag
-        if self.flag == True:
-            self.velocity = 2
-            if self.rotate == True:
-                self.velocity *= -1
-            else:
-                self.velocity *= 1
-        else:
-            self.velocity = 0
-        self.rect.x += self.velocity
-    
-    
-    def collide(self, enemy_group, enemy_barrack):
-        self.enemy_group = enemy_group
-        self.enemy_barrack = enemy_barrack
+        if self.name == "swordsman":
+            self.width = w / 16
+            self.height = h / 8
+            self.img_default = pygame.transform.scale(pygame.image.load("textures/d1.png"), (self.width, self.height))
+            self.img_attacks = [pygame.transform.scale(pygame.image.load("textures/a1.png"), (self.width, self.height)),
+                                pygame.transform.scale(pygame.image.load("textures/a2.png"), (self.width, self.height)),
+                                pygame.transform.scale(pygame.image.load("textures/a3.png"), (self.width, self.height)),]
+            self.image = self.img_default
 
-        if self.enemy_barrack != []:
-            if pygame.sprite.spritecollideany(self, enemy_barrack):
-                print("COLLIDED")
-            else:
-                pass
-        
+        if self.name == "archer":
+            self.width = w / 16
+            self.height = h / 8
+            self.img_default = pygame.transform.scale(pygame.image.load("textures/d1.png"), (self.width, self.height))
+            self.img_attacks = [pygame.transform.scale(pygame.image.load("textures/a1.png"), (self.width, self.height)),
+                                pygame.transform.scale(pygame.image.load("textures/a2.png"), (self.width, self.height)),
+                                pygame.transform.scale(pygame.image.load("textures/a3.png"),
+                                                       (self.width, self.height)), ]
 
+            self.image = self.img_default
 
+        self.rect = self.image.get_rect()
+
+        self.rect.y = h - (self.image.get_height() + tile_size)
+        if team == "1":
+            self.rect.x = (tile_size * 2) - (self.image.get_width() / 2)
+        elif team == "2":
+            self.image = pygame.transform.flip(self.image, True, False)
+            self.rect.x = total_width - (tile_size * 2) - (self.image.get_width() / 2)
 
 
+    def move(self, scroll):
+        if self.team == "1":
+            pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+            self.rect.move_ip(4, 0)
+        elif self.team == "2":
+            pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+            self.rect.move_ip(-4, 0)
 
 
-        
+    def stop(self, scroll):
+        pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
 
-    
-    
+    def attack(self, scroll):
+
+        self.attack_timer_sum += 1
+
+        if self.attack_timer_sum == self.attack_speed:
+            self.pattern = 0
+            self.attack_timer_sum = 0
+            self.attacking = True
+
+        if self.attacking:
+            self.image = self.img_attacks[self.pattern]
+            if self.attack_timer_sum == round(self.attack_speed * 0.1):
+                self.pattern += 1
+            if self.attack_timer_sum == round(self.attack_speed * 0.2):
+                self.attacked_this_turn = False
+                self.pattern += 1
+            if self.team == "1":
+                pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+            elif self.team == "2":
+                self.image = pygame.transform.flip(self.image, True, False)
+                pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+            if self.attack_timer_sum == self.attack_speed * 0.3:
+                self.pattern = 0
+                self.attacking = False
+                self.image = self.img_default
+                if self.team == "1":
+                    pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+                elif self.team == "2":
+                    self.image = pygame.transform.flip(self.image, True, False)
+                    pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+
+
+    def attack_handler_melee(self, group, scroll):
+
+        if pygame.sprite.spritecollideany(self, group):
+            self.stop(scroll)
+            current_target = pygame.sprite.spritecollideany(self, group)
+            self.attack(scroll)
+            if self.attacked_this_turn is False:
+                self.attacked_this_turn = True
+                current_target.hp -= self.dmg
+                if current_target.hp <= 0:
+                    current_target.kill()
+        elif self.hp > 0:
+            self.image = self.img_default
+            if self.team == "2":
+                self.image = pygame.transform.flip(self.image, True, False)
+            self.attacking = False
+            self.pattern = 0
+            self.attacked_this_turn = True
+            self.attack_timer_sum = 20
+            self.move(scroll)
+        elif self.hp <= 0:
+            self.kill()
+
+
+
 

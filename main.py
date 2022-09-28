@@ -1,111 +1,108 @@
-import pygame
-import os
+from soldier import *
+from level import *
 from tower import Tower
-from soldier import Soldier
+import math
 
-# initialize pygame
 pygame.init()
 
-right_exist = False
-left_exist = False
-# initial setups
-WIDTH, HEIGHT = 1200, 500
-FPS = 60
-WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+mob1 = pygame.sprite.Group()
+mob2 = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
+
+width, height = screen_width, screen_height
+fps = 60
+screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Tower Game")
 
-ROTATE = True  # right team
-NO_ROTATE = False  # left team
-
 # basic colors rgb black white
-WHITE, BLACK, RED, GREEN, BLUE = (255, 255, 255), (0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255)
-
-velocity = 2
-
-left_tower = Tower(NO_ROTATE)
-right_tower = Tower(ROTATE)
-
-left_group = pygame.sprite.Group()
-right_group = pygame.sprite.Group()
-
-def draw_window(left_group, right_group): 
-    left_tower.draw_tower()
-    right_tower.draw_tower()
-
-    for entity in left_group:
-        WINDOW.blit(entity.image_soldier, (entity.rect.x, entity.rect.y))
-    
-    for entity in right_group:
-        WINDOW.blit(entity.image_soldier, (entity.rect.x, entity.rect.y))
-    pygame.display.update()
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 
-def move(left, right):
-    for entity in left:
-        entity.soldier_move(True)
-    
-    for entity in right:
-        entity.soldier_move(True)
+def set_background(texture):
+    image = pygame.image.load(texture)
+    image = pygame.transform.scale(image, (width, height))
+    return image
 
-def collide(left_group, right_group, left_barrack, right_barrack):
-    if left_barrack != []:
-        for entity in right_barrack:
-            if pygame.sprite.spritecollideany(entity, left_group):
-                print("COLLIDE")
-            else:
-                pass
-    if right_barrack != []:
-        for entity in left_barrack:
-            if pygame.sprite.spritecollideany(entity, right_group):
-                print("COLLIDE THIS SIDE ALSO")
-            else:
-                pass
 
+background = set_background("textures/forest.png")
+background.convert()
+background_width = background.get_width()
+
+level_ = Level(screen)
+
+left_tower = Tower("1")
+right_tower = Tower("2")
 
 
 def main():
-    run = True
+    running = True
     clock = pygame.time.Clock()
-    left_soldiers_barrack = []
-    right_soldiers_barrack = []
-    while run:
-        clock.tick(FPS)
-        WINDOW.fill(WHITE)
-        #pygame.display.flip()
+    team1 = []
+    team2 = []
+    scroll = 0
+    tiles = math.ceil(width / background.get_width()) + 1
+
+    while running:
+        clock.tick(fps)
+
+        for i in range(-5, tiles):
+            screen.blit(background, (i * background_width + scroll, 0))
+
+        mx, my = pygame.mouse.get_pos()
+
+        if 1 < mx <= width * 0.1: #left
+            print(scroll)
+            if scroll <= -2:
+                scroll += 4
+                level_.world_shift = 4
+            else:
+                level_.world_shift = 0
+        elif width - 1 > mx >= width * 0.9: #right
+            print(scroll)
+            if scroll >= -720:
+                scroll -= 4
+                level_.world_shift = -4
+            else:
+                level_.world_shift = 0
+        else:
+            level_.world_shift = 0
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-                pygame.quit()
+                running = False
 
-            if event.type == pygame.KEYDOWN: 
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:  # summon left side soldier
-                    left_soldier = Soldier(NO_ROTATE)
-                    left_soldiers_barrack.append(left_soldier)
-                    left_group.add(left_soldier)
-
-                    
-
-                if event.key == pygame.K_LEFT:  # summon right side soldier
-                    right_soldier = Soldier(ROTATE)
-                    right_soldiers_barrack.append(right_soldier)
-                    right_group.add(right_soldier)
-
-        
-
-        move(left_soldiers_barrack, right_soldiers_barrack)
-        draw_window(left_group, right_group)
-        
-        if left_soldiers_barrack != []:
-            left_soldier.collide(right_group, right_soldiers_barrack)
-            continue
-        if right_soldiers_barrack != []:
-            right_soldier.collide(left_group, left_soldiers_barrack)
-            continue
-
-        
+                    first = Soldier("1", "swordsman", 100, 25, 100)
+                    team1.append(first)
+                    mob1.add(first)
+                    all_sprites.add(first)
+                if event.key == pygame.K_2:  # summon left side soldier
+                    second = Soldier("2", "swordsman", 100, 25, 100)
+                    team2.append(second)
+                    mob2.add(second)
+                    all_sprites.add(second)
 
 
-    main()
+        if team1 != []:
+            for mob in team1:
+                if mob.hp > 0:
+                    mob.attack_handler_melee(mob2, scroll)
 
-if __name__ == "__main__":
+        if team2 != []:
+            for mob in team2:
+                if mob.hp > 0:
+                    mob.attack_handler_melee(mob1, scroll)
+
+        left_tower.draw_tower(scroll)
+        right_tower.draw_tower(scroll)
+
+        level_.run()
+        pygame.display.update()
+
+if __name__ == '__main__':
     main()
