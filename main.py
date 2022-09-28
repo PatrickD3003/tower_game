@@ -47,6 +47,25 @@ def move(left, right):
     for entity in right:
         entity.soldier_move(True)
 
+def collide(left_group, right_group, left_barrack, right_barrack):
+    if left_barrack != []:
+        for entity in right_barrack:
+            if pygame.sprite.spritecollideany(entity, left_group):
+                print("COLLIDE")
+            else:
+                pass
+    
+    elif right_barrack != []:
+        for entity in left_barrack:
+            if pygame.sprite.spritecollideany(entity, right_group):
+                print("COLLIDE THIS SIDE ALSO")
+            else:
+                pass
+    
+    else:
+        pass
+
+
 def main():
     run = True
     clock = pygame.time.Clock()
@@ -78,6 +97,8 @@ def main():
 
         move(left_soldiers_barrack, right_soldiers_barrack)
         draw_window(left_group, right_group)
+        collide(left_group, right_group, left_soldiers_barrack, right_soldiers_barrack)
+
         
 
 
