@@ -29,7 +29,8 @@ level_ = Level(game_screen)
 
 left_tower = Tower("1")
 right_tower = Tower("2")
-
+left_group.add(left_tower)
+right_group.add(right_tower)
 
 def main():
     running = True
@@ -50,12 +51,12 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:  # summon left side soldier
-                    new_left = Soldier_Melee("1", "swordsman", 100, 25, 100, 0)
+                    new_left = SoldierMelee("1", "swordsman", 100, 25, 100, 0)
                     left_team.append(new_left)
                     left_group.add(new_left)
                     all_sprites.add(new_left)
                 if event.key == pygame.K_2:  # summon left side soldier
-                    new_right = Soldier_Melee("2", "swordsman", 100, 25, 100, 0)
+                    new_right = SoldierMelee("2", "swordsman", 100, 25, 100, 0)
                     right_team.append(new_right)
                     right_group.add(new_right)
                     all_sprites.add(new_right)
@@ -82,6 +83,8 @@ def main():
                     mob.set_scroll(scroll)
                     mob.collision_handler(left_group)
 
+        left_tower.check_hp()
+        right_tower.check_hp()
         left_tower.draw_tower(scroll)
         right_tower.draw_tower(scroll)
 
