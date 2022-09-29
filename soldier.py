@@ -41,25 +41,27 @@ class Soldier_Melee(pygame.sprite.Sprite):
             self.rect.x = total_width - (tile_size * 2) - (self.image.get_width() / 2)
             self.rect.update(self.rect.x - self.attack_range, self.rect.y, self.rect.x + self.attack_range, self.rect.y)
 
+    def set_scroll(self, scroll):
+        self.scroll = scroll
 
-    def move(self, scroll):
+    def move(self):
 
         if self.team == "1":
-            pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+            pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
             self.rect.move_ip(4, 0)
         elif self.team == "2":
-            pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + scroll, self.rect.y))
+            pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
             self.rect.move_ip(-4, 0)
 
 
-    def stop(self, scroll):
+    def stop(self):
 
         if self.team == "1":
-            pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+            pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
         elif self.team == "2":
-            pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + scroll, self.rect.y))
+            pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
 
-    def attack(self, scroll):
+    def attack(self):
 
         self.attack_timer_sum += 1
 
@@ -76,22 +78,22 @@ class Soldier_Melee(pygame.sprite.Sprite):
                 self.attacked_this_turn = False
                 self.pattern += 1
             if self.team == "1":
-                pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+                pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
             elif self.team == "2":
                 self.image = pygame.transform.flip(self.image, True, False)
-                pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + scroll, self.rect.y))
+                pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
             if self.attack_timer_sum == self.attack_speed * 0.3:
                 self.pattern = 0
                 self.attacking = False
                 self.image = self.img_default
                 if self.team == "1":
-                    pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
+                    pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
                 elif self.team == "2":
                     self.image = pygame.transform.flip(self.image, True, False)
-                    pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + scroll, self.rect.y))
+                    pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
 
 
-    def collision_handler(self, group, scroll):
+    def collision_handler(self, group):
 
         if pygame.sprite.spritecollideany(self, group):
             current_target = pygame.sprite.spritecollideany(self, group)
@@ -102,10 +104,10 @@ class Soldier_Melee(pygame.sprite.Sprite):
                 print(range_calc)
 
             if self.attack_range + self.width <= range_calc:
-                self.move(scroll)
+                self.move()
             else:
-                self.stop(scroll)
-                self.attack(scroll)
+                self.stop()
+                self.attack()
                 if self.attacked_this_turn is False:
                     self.attacked_this_turn = True
                     current_target.hp -= self.dmg
@@ -120,7 +122,7 @@ class Soldier_Melee(pygame.sprite.Sprite):
             self.pattern = 0
             self.attacked_this_turn = True
             self.attack_timer_sum = 20
-            self.move(scroll)
+            self.move()
         elif self.hp <= 0:
             self.kill()
 

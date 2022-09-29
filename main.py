@@ -73,12 +73,14 @@ def main():
         if left_team != []:
             for mob in left_team:
                 if mob.hp > 0:
-                    mob.collision_handler(right_group, scroll)
+                    mob.set_scroll(scroll)
+                    mob.collision_handler(right_group)
 
         if right_team != []:
             for mob in right_team:
                 if mob.hp > 0:
-                    mob.collision_handler(left_group, scroll)
+                    mob.set_scroll(scroll)
+                    mob.collision_handler(left_group)
 
         left_tower.draw_tower(scroll)
         right_tower.draw_tower(scroll)
