@@ -13,8 +13,10 @@ WIDTH, HEIGHT = 1200, 500
 FPS = 60
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tower Game")
+
 ROTATE = True  # right team
 NO_ROTATE = False  # left team
+
 # basic colors rgb black white
 WHITE, BLACK, RED, GREEN, BLUE = (255, 255, 255), (0, 0, 0), (255, 0, 0), (0, 255, 0), (0, 0, 255)
 
@@ -23,60 +25,40 @@ velocity = 2
 left_tower = Tower(NO_ROTATE)
 right_tower = Tower(ROTATE)
 
+left_group = pygame.sprite.Group()
+right_group = pygame.sprite.Group()
 
-def draw_window(left_soldiers_barrack, right_soldiers_barrack): 
+def draw_window(left_group, right_group): 
     left_tower.draw_tower()
     right_tower.draw_tower()
 
-    for left_soldier in left_soldiers_barrack:
-        left_soldier.summon_soldier()
+    for entity in left_group:
+        entity.summon_soldier()
     
-    for right_soldier in right_soldiers_barrack:
-        right_soldier.summon_soldier()
+    for entity in right_group:
+        entity.summon_soldier()
     pygame.display.update()
 
+def move(left, right):
+    for entity in left:
+        if entity.alive == True:
+            entity.move_soldier()
+        elif entity.alive == False:
+            left.remove(entity)
 
-def handle_movement(left_soldiers_barrack, right_soldiers_barrack, left_hitbox, right_hitbox):
-    
-    for left_soldier in left_soldiers_barrack:
-        left_soldier.x += velocity
-        if right_soldiers_barrack != []:
-            left_rect = left_soldier.create_hitbox()
-            if right_hitbox.colliderect(left_rect):  # kalo collide dua rectangle
-                print("left collide with right")
-                left_soldiers_barrack.remove(left_soldier)
-            else:
-                print("no collision")
-
-    
-    for right_soldier in right_soldiers_barrack:
-        right_soldier.x -= velocity   
-        if left_soldiers_barrack != []:
-            right_rect = right_soldier.create_hitbox()
-            if left_hitbox.colliderect(right_rect):
-                print("right collide with left")
-                right_soldiers_barrack.remove(right_soldier)
-                
-
-            else:
-                print("no collision")
-                   
+    for entity in right:
+        if entity.alive == True:
+            entity.move_soldier()
+        elif entity.alive == False:
+            right.remove(entity)
 
 def main():
     run = True
     clock = pygame.time.Clock()
     left_soldiers_barrack = []
     right_soldiers_barrack = []
-
-    tower_width, tower_height = 100, 200
-    
-    soldier_width, soldier_height = 40, 40
-    soldier_y = HEIGHT - soldier_height
-    left_soldier_x = 20 + tower_width
-    right_soldier_x = WIDTH - 20 - tower_width - soldier_width
-    
-    left_hitbox = pygame.Rect(left_soldier_x, soldier_y, soldier_width, soldier_height)
-    right_hitbox = pygame.Rect(right_soldier_x, soldier_y, soldier_width, soldier_height)
+    flag1 = True
+    flag2 = True
     while run:
         clock.tick(FPS)
         WINDOW.fill(WHITE)
@@ -88,19 +70,26 @@ def main():
 
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_1:  # summon left side soldier
-                    left_soldier = Soldier(left_hitbox.x, left_hitbox.y, soldier_width, soldier_height, NO_ROTATE)
+                    left_soldier = Soldier(NO_ROTATE)
                     left_soldiers_barrack.append(left_soldier)
-                    
+                    left_group.add(left_soldier)
 
                 if event.key == pygame.K_LEFT:  # summon right side soldier
-                    right_soldier = Soldier(right_hitbox.x, right_hitbox.y, soldier_width, soldier_height, ROTATE)
+                    right_soldier = Soldier(ROTATE)
                     right_soldiers_barrack.append(right_soldier)
-
-        handle_movement(left_soldiers_barrack, right_soldiers_barrack, left_hitbox, right_hitbox)
-        draw_window(left_soldiers_barrack, right_soldiers_barrack)
+                    right_group.add(right_soldier)
         
+        draw_window(left_soldiers_barrack, right_soldiers_barrack)
+        move(left_soldiers_barrack, right_soldiers_barrack)
 
-
+        if left_soldiers_barrack != []:
+            for left_soldier in left_soldiers_barrack:
+                left_soldier.collide(right_group, right_soldiers_barrack)
+                continue
+        if right_soldiers_barrack != []:
+            for right_soldier in right_soldiers_barrack:
+                right_soldier.collide(left_group, left_soldiers_barrack)
+                continue
     main()
 
 if __name__ == "__main__":
