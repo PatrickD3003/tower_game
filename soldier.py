@@ -51,12 +51,14 @@ class SoldierMelee(pygame.sprite.Sprite):
             self.rect.move_ip(4, 0)
             if self.rect.x > total_width:
                 self.hp = 0
+                self.kill()
 
         elif self.team == "2":
             pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
             self.rect.move_ip(-4, 0)
             if self.rect.x < - (self.width + self.attack_range):
                 self.hp = 0
+                self.kill()
 
     def stop(self):
         if self.team == "1":
@@ -106,7 +108,7 @@ class SoldierMelee(pygame.sprite.Sprite):
                 range_calc = self.rect.x - current_target.rect.x + self.attack_range - current_target.width
                 print(range_calc)
 
-            if self.attack_range + self.width <= range_calc:
+            if 0 < self.attack_range + self.width <= abs(range_calc):
                 self.move()
             else:
                 self.stop()
