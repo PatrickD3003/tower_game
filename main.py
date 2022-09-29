@@ -55,6 +55,9 @@ def main():
                         escape_pressed = False
                         menu_screen.end_screen()
                         game_screen.use_screen()
+
+            menu_screen.update_screen()
+            pygame.display.update()
             continue
 
         for event in pygame.event.get():
@@ -96,8 +99,6 @@ def main():
                     mob.set_scroll(scroll)
                     mob.collision_handler(left_group)
 
-        left_tower.check_hp()
-        right_tower.check_hp()
         left_tower.draw_tower(scroll)
         right_tower.draw_tower(scroll)
 

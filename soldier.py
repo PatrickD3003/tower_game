@@ -15,7 +15,7 @@ class SoldierMelee(pygame.sprite.Sprite):
         self.attack_speed = attack_speed
         self.attack_range = attack_range
 
-        self.attack_timer_sum = 20
+        self.attack_timer_sum = round(self.attack_speed / 11)
         self.attacking = False
         self.attacked_this_turn = True
         self.pattern = 0
@@ -96,9 +96,9 @@ class SoldierMelee(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, group):
             current_target = pygame.sprite.spritecollideany(self, group)
             if self.team == "1":
-                range_calc = current_target.rect.x + current_target.attack_range - self.rect.x
+                range_calc = current_target.rect.x + current_target.attack_range - self.rect.x - self.width
             else:
-                range_calc = self.rect.x - current_target.rect.x + self.attack_range
+                range_calc = self.rect.x - current_target.rect.x + self.attack_range - current_target.width
                 print(range_calc)
 
             if self.attack_range + self.width <= range_calc:
@@ -119,7 +119,7 @@ class SoldierMelee(pygame.sprite.Sprite):
             self.attacking = False
             self.pattern = 0
             self.attacked_this_turn = True
-            self.attack_timer_sum = 20
+            self.attack_timer_sum = round(self.attack_speed / 11)
             self.move()
         elif self.hp <= 0:
             self.kill()
