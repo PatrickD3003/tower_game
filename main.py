@@ -45,11 +45,33 @@ def main():
 
         scroll = game_screen.set_scroll(level_)
 
+        if escape_pressed:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        escape_pressed = False
+                        menu_screen.end_screen()
+                        game_screen.use_screen()
+            continue
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if escape_pressed == False:
+                        escape_pressed = True
+                        game_screen.end_screen()
+                        menu_screen.use_screen()
+                    else:
+                        escape_pressed = False
+                        menu_screen.end_screen()
+                        game_screen.use_screen()
+
                 if event.key == pygame.K_1:  # summon left side soldier
                     new_left = SoldierMelee("1", "swordsman", 100, 25, 100, 0)
                     left_team.append(new_left)
@@ -60,15 +82,6 @@ def main():
                     right_team.append(new_right)
                     right_group.add(new_right)
                     all_sprites.add(new_right)
-                if event.key == pygame.K_ESCAPE:
-                    if escape_pressed == False:
-                        escape_pressed = True
-                        game_screen.end_screen()
-                        menu_screen.use_screen()
-                    else:
-                        escape_pressed = False
-                        menu_screen.end_screen()
-                        game_screen.use_screen()
 
 
         if left_team != []:
