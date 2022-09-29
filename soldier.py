@@ -1,12 +1,11 @@
-import pygame
 from level import *
 
 pygame.init()
 
-class Soldier(pygame.sprite.Sprite):
+class Soldier_Melee(pygame.sprite.Sprite):
 
     def __init__(self, team, name, hp, dmg, attack_speed, attack_range):
-        super(Soldier, self).__init__()
+        super(Soldier_Melee, self).__init__()
         w, h = pygame.display.get_surface().get_size()
         self.team = team
         self.name = name
@@ -29,16 +28,6 @@ class Soldier(pygame.sprite.Sprite):
                                 pygame.transform.scale(pygame.image.load("textures/a3.png"), (self.width, self.height)),]
             self.image = self.img_default
 
-        if self.name == "archer":
-            self.width = w / 16
-            self.height = h / 8
-            self.img_default = pygame.transform.scale(pygame.image.load("textures/d1.png"), (self.width, self.height))
-            self.img_attacks = [pygame.transform.scale(pygame.image.load("textures/a1.png"), (self.width, self.height)),
-                                pygame.transform.scale(pygame.image.load("textures/a2.png"), (self.width, self.height)),
-                                pygame.transform.scale(pygame.image.load("textures/a3.png"),
-                                                       (self.width, self.height)), ]
-
-            self.image = self.img_default
 
         self.rect = self.image.get_rect()
 
@@ -53,8 +42,8 @@ class Soldier(pygame.sprite.Sprite):
             self.rect.update(self.rect.x - self.attack_range, self.rect.y, self.rect.x + self.attack_range, self.rect.y)
 
 
-
     def move(self, scroll):
+
         if self.team == "1":
             pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
             self.rect.move_ip(4, 0)
@@ -64,6 +53,7 @@ class Soldier(pygame.sprite.Sprite):
 
 
     def stop(self, scroll):
+
         if self.team == "1":
             pygame.display.get_surface().blit(self.image, (self.rect.x + scroll, self.rect.y))
         elif self.team == "2":
@@ -101,9 +91,7 @@ class Soldier(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + scroll, self.rect.y))
 
 
-
-
-    def attack_handler_melee(self, group, scroll):
+    def collision_handler(self, group, scroll):
 
         if pygame.sprite.spritecollideany(self, group):
             current_target = pygame.sprite.spritecollideany(self, group)

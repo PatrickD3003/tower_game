@@ -1,3 +1,4 @@
+from screen import *
 from soldier import *
 from level import *
 from tower import Tower
@@ -5,14 +6,17 @@ import math
 
 pygame.init()
 
-mob1 = pygame.sprite.Group()
-mob2 = pygame.sprite.Group()
+left_group = pygame.sprite.Group()
+right_group = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 
-width, height = screen_width, screen_height
 fps = 60
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Tower Game")
+
+game_screen = Screen("Game Screen", screen_width, screen_height)
+game_screen.set_background("textures/forest.png")
+game_screen.use_screen()
+
+menu_screen = Screen("Menu Screen", screen_width, screen_height)
 
 # basic colors rgb black white
 WHITE = (255, 255, 255)
@@ -21,18 +25,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-
-def set_background(texture):
-    image = pygame.image.load(texture)
-    image = pygame.transform.scale(image, (width, height))
-    return image
-
-
-background = set_background("textures/forest.png")
-background.convert()
-background_width = background.get_width()
-
-level_ = Level(screen)
+level_ = Level(game_screen)
 
 left_tower = Tower("1")
 right_tower = Tower("2")
@@ -41,33 +34,15 @@ right_tower = Tower("2")
 def main():
     running = True
     clock = pygame.time.Clock()
-    team1 = []
-    team2 = []
+    left_team = []
+    right_team = []
     scroll = 0
-    tiles = math.ceil(width / background.get_width()) + 1
+    escape_pressed = False
 
     while running:
         clock.tick(fps)
 
-        for i in range(-5, tiles):
-            screen.blit(background, (i * background_width + scroll, 0))
-
-        mx, my = pygame.mouse.get_pos()
-
-        if 1 < mx <= width * 0.1: #left
-            if scroll <= -2:
-                scroll += 4
-                level_.world_shift = 4
-            else:
-                level_.world_shift = 0
-        elif width - 1 > mx >= width * 0.9: #right
-            if scroll >= -720:
-                scroll -= 4
-                level_.world_shift = -4
-            else:
-                level_.world_shift = 0
-        else:
-            level_.world_shift = 0
+        scroll = game_screen.set_scroll(level_)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -75,29 +50,40 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:  # summon left side soldier
-                    first = Soldier("1", "swordsman", 100, 25, 100, 500)
-                    team1.append(first)
-                    mob1.add(first)
-                    all_sprites.add(first)
+                    new_left = Soldier_Melee("1", "swordsman", 100, 25, 100, 0)
+                    left_team.append(new_left)
+                    left_group.add(new_left)
+                    all_sprites.add(new_left)
                 if event.key == pygame.K_2:  # summon left side soldier
-                    second = Soldier("2", "swordsman", 100, 25, 100, 0)
-                    team2.append(second)
-                    mob2.add(second)
-                    all_sprites.add(second)
+                    new_right = Soldier_Melee("2", "swordsman", 100, 25, 100, 0)
+                    right_team.append(new_right)
+                    right_group.add(new_right)
+                    all_sprites.add(new_right)
+                if event.key == pygame.K_ESCAPE:
+                    if escape_pressed == False:
+                        escape_pressed = True
+                        game_screen.end_screen()
+                        menu_screen.use_screen()
+                    else:
+                        escape_pressed = False
+                        menu_screen.end_screen()
+                        game_screen.use_screen()
 
 
-        if team1 != []:
-            for mob in team1:
+        if left_team != []:
+            for mob in left_team:
                 if mob.hp > 0:
-                    mob.attack_handler_melee(mob2, scroll)
+                    mob.collision_handler(right_group, scroll)
 
-        if team2 != []:
-            for mob in team2:
+        if right_team != []:
+            for mob in right_team:
                 if mob.hp > 0:
-                    mob.attack_handler_melee(mob1, scroll)
+                    mob.collision_handler(left_group, scroll)
 
         left_tower.draw_tower(scroll)
         right_tower.draw_tower(scroll)
+
+        menu_screen.update_screen()
 
         level_.run()
         pygame.display.update()

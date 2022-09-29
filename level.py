@@ -1,3 +1,4 @@
+from screen import *
 import pygame
 
 level_map = [
@@ -33,7 +34,7 @@ class Tile(pygame.sprite.Sprite):
 
 class Level:
     def __init__(self, surface):
-        self.display_surface = surface
+        self.display_surface = surface.screen
         self.setup_level(level_map)
         self.world_shift = 0
 
