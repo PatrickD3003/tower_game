@@ -49,9 +49,14 @@ class SoldierMelee(pygame.sprite.Sprite):
         if self.team == "1":
             pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
             self.rect.move_ip(4, 0)
+            if self.rect.x > total_width:
+                self.hp = 0
+
         elif self.team == "2":
             pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
             self.rect.move_ip(-4, 0)
+            if self.rect.x < - (self.width + self.attack_range):
+                self.hp = 0
 
     def stop(self):
         if self.team == "1":
