@@ -39,19 +39,6 @@ def draw_window(left_group, right_group):
         entity.summon_soldier()
     pygame.display.update()
 
-def move(left, right):
-    for entity in left:
-        if entity.alive == True:
-            entity.move_soldier()
-        elif entity.alive == False:
-            left.remove(entity)
-
-    for entity in right:
-        if entity.alive == True:
-            entity.move_soldier()
-        elif entity.alive == False:
-            right.remove(entity)
-
 def main():
     run = True
     clock = pygame.time.Clock()
@@ -80,15 +67,23 @@ def main():
                     right_group.add(right_soldier)
         
         draw_window(left_soldiers_barrack, right_soldiers_barrack)
-        move(left_soldiers_barrack, right_soldiers_barrack)
+        # move(left_soldiers_barrack, right_soldiers_barrack)
 
         if left_soldiers_barrack != []:
-            for left_soldier in left_soldiers_barrack:
-                left_soldier.collide(right_group, right_soldiers_barrack)
+            for entity in left_soldiers_barrack:
+                if entity.alive == True:
+                    entity.move_soldier()
+                elif entity.alive == False:
+                    entity.stop_soldier()
+                entity.collide(right_group, right_soldiers_barrack)
                 continue
         if right_soldiers_barrack != []:
-            for right_soldier in right_soldiers_barrack:
-                right_soldier.collide(left_group, left_soldiers_barrack)
+            for entity in right_soldiers_barrack:
+                if entity.alive == True:
+                    entity.move_soldier()
+                elif entity.alive == False:
+                    entity.stop_soldier()
+                entity.collide(left_group, left_soldiers_barrack)
                 continue
     main()
 
