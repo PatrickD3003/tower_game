@@ -55,14 +55,12 @@ def main():
         mx, my = pygame.mouse.get_pos()
 
         if 1 < mx <= width * 0.1: #left
-            print(scroll)
             if scroll <= -2:
                 scroll += 4
                 level_.world_shift = 4
             else:
                 level_.world_shift = 0
         elif width - 1 > mx >= width * 0.9: #right
-            print(scroll)
             if scroll >= -720:
                 scroll -= 4
                 level_.world_shift = -4
@@ -77,12 +75,12 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:  # summon left side soldier
-                    first = Soldier("1", "swordsman", 100, 25, 100)
+                    first = Soldier("1", "swordsman", 100, 25, 100, 500)
                     team1.append(first)
                     mob1.add(first)
                     all_sprites.add(first)
                 if event.key == pygame.K_2:  # summon left side soldier
-                    second = Soldier("2", "swordsman", 100, 25, 100)
+                    second = Soldier("2", "swordsman", 100, 25, 100, 0)
                     team2.append(second)
                     mob2.add(second)
                     all_sprites.add(second)
