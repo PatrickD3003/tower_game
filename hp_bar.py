@@ -18,7 +18,7 @@ class HealthBar:
     def update_bar(self, entity):
         self.entity_hp_current = entity.hp
         self.width = self.bar_multiplier * self.entity_hp_current
-        self.height = 20
+        self.height = 5
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill("red")
         self.rect = self.image.get_rect(topleft=(self.x_pos, self.y_pos))
