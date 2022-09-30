@@ -38,8 +38,8 @@ right_group.add(right_tower)
 left_tower_hp = HealthBar(left_tower)
 right_tower_hp = HealthBar(right_tower)
 
-team1_point_bar = PointBar("1")
-team2_point_bar = PointBar("2")
+left_points = PointBar("1")
+right_points = PointBar("2")
 
 
 def main():
@@ -86,15 +86,23 @@ def main():
                         game_screen.use_screen()
 
                 if event.key == pygame.K_1:  # summon left side soldier
-                    new_left = SoldierMelee("1", "swordsman", 100, 25, 100, 0)
-                    left_team.append(new_left)
-                    left_group.add(new_left)
-                    all_sprites.add(new_left)
+                    if left_points.game_points >= 1:
+                        new_left = SoldierMelee("1", "swordsman", 100, 25, 100, 0, 1)
+                        left_team.append(new_left)
+                        left_group.add(new_left)
+                        all_sprites.add(new_left)
+                        left_points.game_points -= 1
+                    else:
+                        print("not enough")
                 if event.key == pygame.K_2:  # summon left side soldier
-                    new_right = SoldierMelee("2", "swordsman", 100, 25, 100, 0)
-                    right_team.append(new_right)
-                    right_group.add(new_right)
-                    all_sprites.add(new_right)
+                    if right_points.game_points >= 1:
+                        new_right = SoldierMelee("2", "swordsman", 100, 25, 100, 0, 1)
+                        right_team.append(new_right)
+                        right_group.add(new_right)
+                        all_sprites.add(new_right)
+                        right_points.game_points -= 1
+                    else:
+                        print("not enough")
 
 
         if left_team != []:
@@ -118,8 +126,8 @@ def main():
         left_tower_hp.update_bar(left_tower)
         right_tower_hp.update_bar(right_tower)
 
-        team1_point_bar.add_points()
-        team2_point_bar.add_points()
+        left_points.add_points()
+        right_points.add_points()
 
         menu_screen.update_screen()
 

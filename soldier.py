@@ -5,7 +5,7 @@ pygame.init()
 
 class SoldierMelee(pygame.sprite.Sprite):
 
-    def __init__(self, team, name, hp, dmg, attack_speed, attack_range):
+    def __init__(self, team, name, hp, dmg, attack_speed, attack_range, cost):
         super(SoldierMelee, self).__init__()
         w, h = pygame.display.get_surface().get_size()
         self.team = team
@@ -14,6 +14,7 @@ class SoldierMelee(pygame.sprite.Sprite):
         self.dmg = dmg
         self.attack_speed = attack_speed
         self.attack_range = attack_range
+        self.cost = cost
 
         self.attack_timer_sum = round(self.attack_speed / 11)
         self.attacking = False
