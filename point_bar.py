@@ -32,3 +32,6 @@ class PointBar:
         else:
             pygame.display.get_surface().blit(self.image, (self.rect.x - team2_displacement, self.rect.y))
 
+    def use_points(self, entity):
+        cost = entity.cost
+
