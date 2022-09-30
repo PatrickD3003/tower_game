@@ -107,7 +107,6 @@ class SoldierMelee(pygame.sprite.Sprite):
                 range_calc = current_target.rect.x + current_target.attack_range - self.rect.x - self.width
             else:
                 range_calc = self.rect.x - current_target.rect.x + self.attack_range - current_target.width
-                print(range_calc)
 
             if 0 < self.attack_range + self.width <= abs(range_calc):
                 self.move()
