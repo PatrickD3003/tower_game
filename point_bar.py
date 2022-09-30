@@ -6,7 +6,7 @@ class PointBar:
         self.team = team
         self.current_points = 0
         self.game_points = 0  # 1 game point is 100 points
-        self.bar_multiplier = 1
+        self.bar_multiplier = 0.5
 
         if self.team == "1":
             self.x_pos = w / 20
