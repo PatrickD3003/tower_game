@@ -3,6 +3,7 @@ from soldier import *
 from level import *
 from tower import Tower
 from hp_bar import *
+from point_bar import *
 import math
 
 pygame.init()
@@ -36,6 +37,9 @@ right_group.add(right_tower)
 
 left_tower_hp = HealthBar(left_tower)
 right_tower_hp = HealthBar(right_tower)
+
+team1_point_bar = PointBar("1")
+team2_point_bar = PointBar("2")
 
 
 def main():
@@ -111,8 +115,11 @@ def main():
         left_tower_hp.set_scroll(scroll)
         right_tower_hp.set_scroll(scroll)
 
-        left_tower_hp.update_bar()
-        right_tower_hp.update_bar()
+        left_tower_hp.update_bar(left_tower)
+        right_tower_hp.update_bar(right_tower)
+
+        team1_point_bar.add_points()
+        team2_point_bar.add_points()
 
         menu_screen.update_screen()
 
