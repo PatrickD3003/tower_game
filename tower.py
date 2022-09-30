@@ -9,6 +9,7 @@ class Tower(pygame.sprite.Sprite):
         super(Tower, self).__init__()
         WIDTH, HEIGHT = pygame.display.get_surface().get_size()
         WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.team = team
         self.width, self.height = WIDTH / 6, HEIGHT / 3
         self.tower_image_import = pygame.image.load(os.path.join("textures", "castle.png"))
         self.image = pygame.transform.scale(self.tower_image_import, (self.width, self.height))

@@ -2,12 +2,14 @@ from screen import *
 from soldier import *
 from level import *
 from tower import Tower
+from hp_bar import *
 import math
 
 pygame.init()
 
 left_group = pygame.sprite.Group()
 right_group = pygame.sprite.Group()
+hp_bars = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 
 fps = 60
@@ -32,13 +34,17 @@ right_tower = Tower("2")
 left_group.add(left_tower)
 right_group.add(right_tower)
 
+left_tower_hp = HealthBar(left_tower)
+right_tower_hp = HealthBar(right_tower)
+
+
 def main():
     running = True
     clock = pygame.time.Clock()
     left_team = []
     right_team = []
-    scroll = 0
     escape_pressed = False
+
 
     while running:
         clock.tick(fps)
@@ -66,7 +72,7 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if escape_pressed == False:
+                    if not escape_pressed:
                         escape_pressed = True
                         game_screen.end_screen()
                         menu_screen.use_screen()
@@ -101,6 +107,12 @@ def main():
 
         left_tower.draw_tower(scroll)
         right_tower.draw_tower(scroll)
+
+        left_tower_hp.set_scroll(scroll)
+        right_tower_hp.set_scroll(scroll)
+
+        left_tower_hp.update_bar()
+        right_tower_hp.update_bar()
 
         menu_screen.update_screen()
 
