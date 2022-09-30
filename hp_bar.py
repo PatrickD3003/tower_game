@@ -26,5 +26,5 @@ class HealthBar:
         if self.team == "1":
             pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
         else:
-            pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll - team2_displacement, self.rect.y))
+            pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll - team2_displacement - self.width, self.rect.y))
 
