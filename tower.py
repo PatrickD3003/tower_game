@@ -19,11 +19,11 @@ class Tower(pygame.sprite.Sprite):
         self.rect.y = HEIGHT - (self.image.get_height() + tile_size)
         if team == "1":
             self.attack_range = 0
-            self.rect.x = round(tile_size * 1.5) - (self.image.get_width() / 2)
+            self.rect.x = round(tile_size * 1.7) - (self.image.get_width() / 2)
         elif team == "2":
             self.attack_range = 0
             self.image = pygame.transform.flip(self.image, True, False)
-            self.rect.x = total_width - round(tile_size * 1.5) - (self.image.get_width() / 2)
+            self.rect.x = total_width - round(tile_size * 1.7) - (self.image.get_width() / 2)
 
     def draw_tower(self, scroll):
         if self.hp > 0:
