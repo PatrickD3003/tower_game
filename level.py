@@ -23,11 +23,15 @@ screen_height = len(level_map) * tile_size
 total_width = len(level_map[0]) * 64
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, size):
+    def __init__(self, pos, size, image=""):
         super().__init__()
-        self.image = pygame.Surface((size, size))
-        self.image.fill("grey")
-        self.rect = self.image.get_rect(topleft = pos)
+        if image is "":
+            self.image = pygame.Surface((size, size))
+            self.image.fill("grey")
+            self.rect = self.image.get_rect(topleft = pos)
+        else:
+            self.image = pygame.transform.scale(pygame.image.load(image), (size, size))
+            self.rect = self.image.get_rect(topleft=pos)
 
     def update(self, x_shift):
         self.rect.x += x_shift
@@ -45,7 +49,7 @@ class Level:
                 if cell == "X":
                     x = col_index * tile_size
                     y = row_index * tile_size
-                    tile = Tile((x, y), tile_size)
+                    tile = Tile((x, y), tile_size, image="textures/ground_textures/sand_ground.png")
                     self.tiles.add(tile)
 
     def run(self):

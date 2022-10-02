@@ -128,6 +128,7 @@ class SoldierMelee(pygame.sprite.Sprite):
             self.attacked_this_turn = True
             self.attack_timer_sum = round(self.attack_speed / 11)
             self.move()
+
         elif self.hp <= 0:
             self.kill()
 
