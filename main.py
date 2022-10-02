@@ -125,6 +125,8 @@ def main():
                     else:
                         print("not enough")
 
+        left_tower.draw_tower(scroll)
+        right_tower.draw_tower(scroll)
 
         if left_team != []:
             for mob in left_team:
@@ -137,9 +139,6 @@ def main():
                 if mob.hp > 0:
                     mob.set_scroll(scroll)
                     mob.collision_handler(left_group)
-
-        left_tower.draw_tower(scroll)
-        right_tower.draw_tower(scroll)
 
         left_tower_hp.set_scroll(scroll)
         right_tower_hp.set_scroll(scroll)
