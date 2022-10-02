@@ -1,9 +1,12 @@
+import pygame
+
 from screen import *
 from soldier import *
 from level import *
 from tower import Tower
 from hp_bar import *
 from point_bar import *
+from button import *
 import math
 
 pygame.init()
@@ -41,6 +44,8 @@ right_tower_hp = HealthBar(right_tower)
 left_points = PointBar("1")
 right_points = PointBar("2")
 
+resume_button = Button(WHITE, 200, 50, text="RESUME")
+pause_sign = Button(BLACK, 400, 100, text="PAUSED")
 
 def main():
     running = True
@@ -56,6 +61,17 @@ def main():
         scroll = game_screen.set_scroll(level_)
 
         if escape_pressed:
+
+            menu_screen.update_screen()
+
+            button_x = menu_screen.width / 2 - resume_button.width / 2
+            button_y = round(menu_screen.height / 1.2) - resume_button.height / 2
+            resume_button.draw(menu_screen.screen, button_x, button_y, BLACK, 40, True)
+
+            sign_x = menu_screen.width / 2 - pause_sign.width / 2
+            sign_y = round(menu_screen.height / 6) - pause_sign.height / 2
+            pause_sign.draw(menu_screen.screen, sign_x, sign_y, WHITE, 80, True)
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -66,7 +82,12 @@ def main():
                         menu_screen.end_screen()
                         game_screen.use_screen()
 
-            menu_screen.update_screen()
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if resume_button.is_clicked(pygame.mouse.get_pos()):
+                        escape_pressed = False
+                        menu_screen.end_screen()
+                        game_screen.use_screen()
+
             pygame.display.update()
             continue
 
