@@ -11,6 +11,13 @@ import math
 
 pygame.init()
 
+# basic colors rgb black white
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
 left_group = pygame.sprite.Group()
 right_group = pygame.sprite.Group()
 hp_bars = pygame.sprite.Group()
@@ -24,12 +31,7 @@ game_screen.use_screen()
 
 menu_screen = Screen("Menu Screen", screen_width, screen_height)
 
-# basic colors rgb black white
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+start_screen = Screen("Start Screen", screen_width, screen_height)
 
 level_ = Level(game_screen)
 
@@ -46,6 +48,7 @@ right_points = PointBar("2")
 
 resume_button = Button(WHITE, 200, 50, text="RESUME")
 pause_sign = Button(BLACK, 400, 100, text="PAUSED")
+start_button = Button(WHITE, 400, 100, text="START")
 
 def main():
     running = True
@@ -53,12 +56,35 @@ def main():
     left_team = []
     right_team = []
     escape_pressed = False
-
+    start = True
 
     while running:
         clock.tick(fps)
 
         scroll = game_screen.set_scroll(level_)
+
+        if start:
+            start_screen.use_screen()
+
+            start_screen.update_screen()
+
+            button_x = start_screen.width / 2 - start_button.width / 2
+            button_y = round(start_screen.height / 2) - start_button.height / 2
+            start_button.draw(start_screen.screen, button_x, button_y, BLACK, 80, True)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    running = False
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if start_button.is_clicked(pygame.mouse.get_pos()):
+                        start = False
+                        start_screen.end_screen()
+                        game_screen.use_screen()
+
+            pygame.display.update()
+            continue
 
         if escape_pressed:
 
