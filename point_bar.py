@@ -20,7 +20,7 @@ class PointBar:
             self.current_points -= 100
             self.game_points += 1
 
-        self.current_points += 1
+        self.current_points += 0.5
         self.width = (self.bar_multiplier * self.current_points) + (self.bar_multiplier * self.game_points * 100)
         self.height = 10
         team2_displacement = (self.bar_multiplier * self.current_points) + (
