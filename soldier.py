@@ -1,4 +1,6 @@
+import spritesheet
 from level import *
+import math
 
 pygame.init()
 
@@ -16,19 +18,21 @@ class SoldierMelee(pygame.sprite.Sprite):
         self.attack_range = attack_range
         self.cost = cost
 
+        self.walk_timer = 0
+        self.walk_pattern = 0
+
         self.attack_timer_sum = round(self.attack_speed / 11)
         self.attacking = False
         self.attacked_this_turn = True
         self.pattern = 0
 
         if self.name == "swordsman":
+            self.sprite_sheet_image = spritesheet.SpriteSheet("textures/sprite_textures/attack_sheet.png")
             self.width = w / 16
             self.height = h / 8
-            self.img_walk = pygame.transform.scale(pygame.image.load("textures/d1.png"), (self.width, self.height))
-            self.img_attack = [pygame.transform.scale(pygame.image.load("textures/a1.png"), (self.width, self.height)),
-                                pygame.transform.scale(pygame.image.load("textures/a2.png"), (self.width, self.height)),
-                                pygame.transform.scale(pygame.image.load("textures/a3.png"), (self.width, self.height)),]
-            self.image = self.img_walk
+            self.img_attack = self.sprite_sheet_image.images_at([(93, 0, 38, 38), (143, 0, 38, 38), (185, 0, 48, 48)], 2.2)
+            self.img_walk = self.sprite_sheet_image.images_at([(0, 0, 38, 38), (48, 0, 38, 38)], 2.2)
+            self.image = self.img_walk[0]
             self.attack_animations_count = len(self.img_attack)
 
 
@@ -47,7 +51,17 @@ class SoldierMelee(pygame.sprite.Sprite):
         self.scroll = scroll
 
     def move(self):
+        self.walk_timer += 1
+
+        if self.walk_timer == 10:
+            self.walk_pattern += 1
+            self.walk_timer = 0
+
+        if self.walk_pattern == len(self.img_walk):
+            self.walk_pattern = 0
+
         if self.team == "1":
+            self.image = self.img_walk[self.walk_pattern]
             pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
             self.rect.move_ip(4, 0)
             if self.rect.x > total_width:
@@ -55,6 +69,8 @@ class SoldierMelee(pygame.sprite.Sprite):
                 self.kill()
 
         elif self.team == "2":
+            self.image = self.img_walk[self.walk_pattern]
+            self.image = pygame.transform.flip(self.image, True, False)
             pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
             self.rect.move_ip(-4, 0)
             if self.rect.x < - (self.width + self.attack_range):
@@ -79,20 +95,23 @@ class SoldierMelee(pygame.sprite.Sprite):
             self.image = self.img_attack[self.pattern]
             self.animation_interval = 0.4 / self.attack_animations_count
             if self.pattern < self.attack_animations_count - 1:
-                if self.attack_timer_sum == round(self.attack_speed * self.animation_interval * self.pattern):
+                if self.attack_timer_sum == round(self.attack_speed * self.animation_interval * math.log(self.pattern + 2, 2)):
                     self.pattern += 1
-                if self.attack_timer_sum == round(self.attack_speed * self.animation_interval):
-                    self.attacked_this_turn = False
 
             if self.team == "1":
                 pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
             elif self.team == "2":
                 self.image = pygame.transform.flip(self.image, True, False)
                 pygame.display.get_surface().blit(self.image, (self.rect.x + self.attack_range + self.scroll, self.rect.y))
-            if self.attack_timer_sum == self.attack_speed * 0.3:
+
+            if self.attack_timer_sum == round(self.attack_speed * 0.48):
+                if self.pattern == self.attack_animations_count - 1:
+                    self.attacked_this_turn = False
+
+            if self.attack_timer_sum == round(self.attack_speed * 0.5):
                 self.pattern = 0
                 self.attacking = False
-                self.image = self.img_walk
+                self.image = self.img_walk[0]
                 if self.team == "1":
                     pygame.display.get_surface().blit(self.image, (self.rect.x + self.scroll, self.rect.y))
                 elif self.team == "2":
@@ -101,6 +120,7 @@ class SoldierMelee(pygame.sprite.Sprite):
 
 
     def collision_handler(self, group):
+
         if pygame.sprite.spritecollideany(self, group):
             current_target = pygame.sprite.spritecollideany(self, group)
             if self.team == "1":
@@ -120,7 +140,6 @@ class SoldierMelee(pygame.sprite.Sprite):
                         current_target.kill()
 
         elif self.hp > 0:
-            self.image = self.img_walk
             if self.team == "2":
                 self.image = pygame.transform.flip(self.image, True, False)
             self.attacking = False
@@ -129,8 +148,6 @@ class SoldierMelee(pygame.sprite.Sprite):
             self.attack_timer_sum = round(self.attack_speed / 11)
             self.move()
 
-        elif self.hp <= 0:
-            self.kill()
 
 
 

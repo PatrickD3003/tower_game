@@ -1,4 +1,5 @@
 import pygame
+import spritesheet
 
 from screen import *
 from soldier import *
