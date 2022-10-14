@@ -2,6 +2,7 @@ import pygame
 
 class Projectile(pygame.sprite.Sprite):
 
+    gravity = 5
     def __init__(self, img, width, height, velocity):
         super(Projectile, self).__init__()
         self.xv = velocity[0]
@@ -21,4 +22,5 @@ class Projectile(pygame.sprite.Sprite):
 
         self.rect.y = self.unit.rect.y - 10
 
-    def move(self):
+    def move(self, x=0, y=0):
+
