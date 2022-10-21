@@ -19,6 +19,8 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
+NOW_MS = 0
+
 left_group = pygame.sprite.Group()
 right_group = pygame.sprite.Group()
 hp_bars = pygame.sprite.Group()
@@ -58,6 +60,7 @@ def main():
     right_team = []
     escape_pressed = False
     start = True
+    NOW_MS = pygame.time.get_ticks()
 
     while running:
         clock.tick(fps)

@@ -1,34 +1,47 @@
 import pygame
+import math
 
-class Projectile(pygame.sprite.Sprite):
+class ProjectileSprite(pygame.sprite.Sprite):
+    GRAVITY          = -9.8  
 
-    gravity = 5
-    def __init__(self, img, width, height, velocity):
-        super(Projectile, self).__init__()
-        self.x_velocity = velocity
-        self.image = pygame.image.load(img)
-        self.image = pygame.transform.scale(self.image, (width, height))
-        self.rect = self.image.get_rect()
-
-    def summon(self, unit):
+    def __init__(self, bitmap, unit, velocity=0, angle=0):
+        super(ProjectileSprite, self).__init__(self)
+        self.w, self.h = pygame.display.get_surface().get_size()
+        self.image = bitmap
         self.unit = unit
+        self.rect = bitmap.get_rect()
         self.team = unit.team
-        self.dmg = unit.dmg
         if self.team == "1":
-            self.rect.x = self.unit.rect.x + self.unit.image.get_width()
+            self.start_x = unit.rect.x + unit.rect.get_width()
         else:
-            self.rect.x = self.unit.rect.x
+            self.start_x = unit.rect.x
+        self.start_y = self.h - self.rect.height
+        self.rect.center = ((self.start_x, self.start_y))
+        # Physics
+        self.setInitialVelocityRadians(velocity, angle)
 
-        self.rect.y = self.unit.rect.y - 10
+    def setInitialVelocityRadians( self, velocity, angle_rads):
+        global NOW_MS
+        self.start_time = NOW_MS
+        self.velocity = velocity
+        self.angle = angle_rads
 
-    def projectile_move(self, distance):
-        time_taken = distance / self.x_velocity
-        self.y_velocity = 4
-        pygame.display.get_surface().blit(self.image, (self.rect.x, self.rect.y))
-        self.rect.move_ip(self.x_velocity, self.y_velocity)
-        self.y_velocity -= Projectile.gravity
+    def update(self):
+        global NOW_MS
+        if (self.velocity > 0):
+            time_change = (NOW_MS - self.start_time) / 150.0  # Should be 1000, but 100 looks better
+            if (time_change > 0):
 
-    def set_scroll(self, scroll):
-        self.scroll = scroll
+                # re-calcualte the velocity
+                half_gravity_time_squared = self.GRAVITY * time_change * time_change / 2.0
+                displacement_x = self.velocity * math.sin(self.angle) * time_change 
+                displacement_y = self.velocity * math.cos(self.angle) * time_change + half_gravity_time_squared
 
-Arrow = Projectile("textures/sprite_textures/Arrow.png", 20, 5, 5)
+                # reposition sprite
+                self.rect.center = ( ( self.start_x + int( displacement_x ), self.start_y - int( displacement_y ) ) )
+
+                # Stop at the bottom of the window
+                if (self.rect.y >= self.h - self.rect.height):
+                    self.rect.y = self.h - self.rect.height
+                    self.velocity = 0
+                    self.kill
