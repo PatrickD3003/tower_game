@@ -2,7 +2,7 @@ import pygame
 import math
 
 class ProjectileSprite(pygame.sprite.Sprite):
-    GRAVITY          = -9.8  
+    GRAVITY = -9.8
 
     def __init__(self, bitmap, unit, velocity=0, angle=0):
         super(ProjectileSprite, self).__init__(self)

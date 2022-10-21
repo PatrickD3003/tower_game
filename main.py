@@ -3,11 +3,13 @@ import spritesheet
 
 from screen import *
 from soldier import *
+from soldier_ranged import *
 from level import *
 from tower import Tower
 from hp_bar import *
 from point_bar import *
 from button import *
+from projectile import *
 import math
 
 pygame.init()
@@ -53,11 +55,14 @@ resume_button = Button(WHITE, 200, 50, text="RESUME")
 pause_sign = Button(BLACK, 400, 100, text="PAUSED")
 start_button = Button(WHITE, 400, 100, text="START")
 
+
+
 def main():
     running = True
     clock = pygame.time.Clock()
     left_team = []
     right_team = []
+    bullets = []
     escape_pressed = False
     start = True
     NOW_MS = pygame.time.get_ticks()
@@ -145,6 +150,15 @@ def main():
                         left_points.game_points -= 1
                     else:
                         print("not enough")
+                if event.key == pygame.K_LEFT:  # summon left side soldier
+                    if left_points.game_points >= 1:
+                        new_left = SoldierRanged("1", "archer", 100, 25, 100, 0, 1)
+                        left_team.append(new_left)
+                        left_group.add(new_left)
+                        all_sprites.add(new_left)
+                        left_points.game_points -= 1
+                    else:
+                        print("not enough")
                 if event.key == pygame.K_2:  # summon left side soldier
                     if right_points.game_points >= 1:
                         new_right = SoldierMelee("2", "swordsman", 100, 25, 100, 0, 1)
@@ -169,6 +183,9 @@ def main():
                 if mob.hp > 0:
                     mob.set_scroll(scroll)
                     mob.collision_handler(left_group)
+
+        for bullet in bullets:
+            bullet.update()
 
         left_tower_hp.set_scroll(scroll)
         right_tower_hp.set_scroll(scroll)

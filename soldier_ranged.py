@@ -1,15 +1,15 @@
 import spritesheet
 from level import *
 import math
-import projectile
+from projectile import *
 
 pygame.init()
 
 
-class SoldierRange(pygame.sprite.Sprite):
+class SoldierRanged(pygame.sprite.Sprite):
 
     def __init__(self, team, name, hp, dmg, attack_speed, attack_range, cost):
-        super(SoldierRange, self).__init__()
+        super(SoldierRanged, self).__init__()
         w, h = pygame.display.get_surface().get_size()
         self.team = team
         self.name = name
@@ -136,12 +136,11 @@ class SoldierRange(pygame.sprite.Sprite):
                 self.attack()
                 if self.attacked_this_turn is False:
                     self.attacked_this_turn = True
-                    a = projectile.Arrow
-                    a.summon(self)
+                    self.projectile = ProjectileSprite(self, "textures/sprite_textures/Arrow.png", self, velocity=50, angle=1)
+                    global bullets
+                    bullets.append(self.projectile)
                     if current_target.hp <= 0:
                         current_target.kill()
-                    return a
-
 
         elif self.hp > 0:
             if self.team == "2":
