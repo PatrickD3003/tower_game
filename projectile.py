@@ -5,9 +5,9 @@ class ProjectileSprite(pygame.sprite.Sprite):
     GRAVITY = -9.8
 
     def __init__(self, bitmap, unit, velocity=0, angle=0):
-        super(ProjectileSprite, self).__init__(self)
+        super(ProjectileSprite, self).__init__()
         self.w, self.h = pygame.display.get_surface().get_size()
-        self.image = bitmap
+        self.image = pygame.image.load(bitmap)
         self.unit = unit
         self.rect = bitmap.get_rect()
         self.team = unit.team
@@ -38,7 +38,7 @@ class ProjectileSprite(pygame.sprite.Sprite):
                 displacement_y = self.velocity * math.cos(self.angle) * time_change + half_gravity_time_squared
 
                 # reposition sprite
-                self.rect.center = ( ( self.start_x + int( displacement_x ), self.start_y - int( displacement_y ) ) )
+                self.rect.center = ((self.start_x + int(displacement_x), self.start_y - int(displacement_y)))
 
                 # Stop at the bottom of the window
                 if (self.rect.y >= self.h - self.rect.height):
