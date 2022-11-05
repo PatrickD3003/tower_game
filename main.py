@@ -55,20 +55,19 @@ resume_button = Button(WHITE, 200, 50, text="RESUME")
 pause_sign = Button(BLACK, 400, 100, text="PAUSED")
 start_button = Button(WHITE, 400, 100, text="START")
 
-
+bullets = []
 
 def main():
     running = True
     clock = pygame.time.Clock()
     left_team = []
     right_team = []
-    bullets = []
     escape_pressed = False
     start = True
-    NOW_MS = pygame.time.get_ticks()
 
     while running:
         clock.tick(fps)
+        NOW_MS = pygame.time.get_ticks()
 
         scroll = game_screen.set_scroll(level_)
 
@@ -152,7 +151,7 @@ def main():
                         print("not enough")
                 if event.key == pygame.K_LEFT:  # summon left side soldier
                     if left_points.game_points >= 1:
-                        new_left = SoldierRanged("1", "archer", 100, 25, 100, 0, 1)
+                        new_left = SoldierRanged("1", "archer", 100, 25, 100, 500, 1)
                         left_team.append(new_left)
                         left_group.add(new_left)
                         all_sprites.add(new_left)

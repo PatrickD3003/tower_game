@@ -1,27 +1,26 @@
 import pygame
 import math
+import main
 
 class ProjectileSprite(pygame.sprite.Sprite):
     GRAVITY = -9.8
-
     def __init__(self, bitmap, unit, velocity=0, angle=0):
         super(ProjectileSprite, self).__init__()
         self.w, self.h = pygame.display.get_surface().get_size()
         self.image = pygame.image.load(bitmap)
         self.unit = unit
-        self.rect = bitmap.get_rect()
+        self.rect = self.image.get_rect()
         self.team = unit.team
         if self.team == "1":
-            self.start_x = unit.rect.x + unit.rect.get_width()
+            self.start_x = unit.rect.x + unit.rect.w
         else:
             self.start_x = unit.rect.x
         self.start_y = self.h - self.rect.height
         self.rect.center = ((self.start_x, self.start_y))
         # Physics
-        self.setInitialVelocityRadians(velocity, angle)
+        self.setInitialVelocityRadians(velocity, angle, main.NOW_MS)
 
-    def setInitialVelocityRadians( self, velocity, angle_rads):
-        global NOW_MS
+    def setInitialVelocityRadians( self, velocity, angle_rads, NOW_MS):
         self.start_time = NOW_MS
         self.velocity = velocity
         self.angle = angle_rads

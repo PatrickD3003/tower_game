@@ -2,6 +2,7 @@ import spritesheet
 from level import *
 import math
 from projectile import *
+from main import bullets
 
 pygame.init()
 
@@ -137,7 +138,6 @@ class SoldierRanged(pygame.sprite.Sprite):
                 if self.attacked_this_turn is False:
                     self.attacked_this_turn = True
                     self.projectile = ProjectileSprite("textures/sprite_textures/Arrow.png", self, velocity=50, angle=1)
-                    global bullets
                     bullets.append(self.projectile)
                     if current_target.hp <= 0:
                         current_target.kill()
