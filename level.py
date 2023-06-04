@@ -25,7 +25,7 @@ total_width = len(level_map[0]) * 64
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, size, image=""):
         super().__init__()
-        if image is "":
+        if image == "":
             self.image = pygame.Surface((size, size))
             self.image.fill("grey")
             self.rect = self.image.get_rect(topleft = pos)
